@@ -1,21 +1,27 @@
 // ================================
 // script.js for Daily Trend News
+// Using CORS proxy for GitHub Pages
 // ================================
 
 // ---------- Step 1: NewsAPI Setup ----------
-const NEWS_API_KEY = "ac15a6137d2f4874a62d6659dda5c553"; // Replace with your NewsAPI key
+const NEWS_API_KEY = "ac15a6137d2f4874a62d6659dda5c553"; // Replace with your actual NewsAPI key
 
 async function fetchTopNews() {
-  const url = `https://newsapi.org/v2/top-headlines?country=us&pageSize=5&apiKey=${NEWS_API_KEY}`;
+  // CORS proxy: https://api.allorigins.win/raw?url=
+  const apiUrl = `https://newsapi.org/v2/top-headlines?country=us&pageSize=5&apiKey=${NEWS_API_KEY}`;
+  const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
   
   try {
     const response = await fetch(url);
     const data = await response.json();
     
     const main = document.querySelector("main");
-    
-    // Clear main content first
-    main.innerHTML = "";
+    main.innerHTML = ""; // Clear existing content
+
+    if (!data.articles || data.articles.length === 0) {
+      main.innerHTML = "<p>No news found at the moment.</p>";
+      return;
+    }
 
     data.articles.forEach(article => {
       const newsItem = document.createElement("article");
@@ -73,12 +79,13 @@ function loadGoogleTrends() {
   main.appendChild(googleArticle);
 }
 
-// ---------- Step 4: Add Current Date in Footer ----------
+// ---------- Step 4: Initialize everything ----------
 window.addEventListener("DOMContentLoaded", () => {
-  fetchTopNews();
-  loadTikTokTrends();
-  loadGoogleTrends();
+  fetchTopNews();       // Step 1: Top News
+  loadTikTokTrends();   // Step 2: TikTok Trends
+  loadGoogleTrends();   // Step 3: Google Trends
 
+  // Add current date in footer
   const footer = document.querySelector("footer p");
   const date = new Date();
   footer.textContent += ` | Updated: ${date.toDateString()}`;
