@@ -1,91 +1,73 @@
-// ================================
-// script.js for Daily Trend News
-// Using CORS proxy for GitHub Pages
-// ================================
+// Manual version: Top News + TikTok + Google Trends
+// No API required
 
-// ---------- Step 1: NewsAPI Setup ----------
-const NEWS_API_KEY = "ac15a6137d2f4874a62d6659dda5c553"; // Replace with your actual NewsAPI key
-
-async function fetchTopNews() {
-  // CORS proxy: https://api.allorigins.win/raw?url=
-  const apiUrl = `https://newsapi.org/v2/top-headlines?country=us&pageSize=5&apiKey=${NEWS_API_KEY}`;
-  const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
-  
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    
-    const main = document.querySelector("main");
-    main.innerHTML = ""; // Clear existing content
-
-    if (!data.articles || data.articles.length === 0) {
-      main.innerHTML = "<p>No news found at the moment.</p>";
-      return;
-    }
-
-    data.articles.forEach(article => {
-      const newsItem = document.createElement("article");
-      newsItem.innerHTML = `
-        <h2>${article.title}</h2>
-        <p>${article.description || "No description available"}</p>
-        <a href="${article.url}" target="_blank">Read More</a>
-      `;
-      main.appendChild(newsItem);
-    });
-  } catch (error) {
-    console.error("Error fetching news:", error);
-    const main = document.querySelector("main");
-    main.innerHTML = "<p>Unable to load news at the moment. Please try again later.</p>";
-  }
-}
-
-// ---------- Step 2: TikTok Trends Placeholder ----------
-function loadTikTokTrends() {
+window.addEventListener("DOMContentLoaded", () => {
   const main = document.querySelector("main");
-  
+
+  // --- Top News ---
+  const topNews = [
+    {
+      title: "Top News 1: AI Tools Revolution 2026",
+      description: "Discover how AI tools are changing the way we work and learn in 2026.",
+      url: "https://example.com/news1"
+    },
+    {
+      title: "Top News 2: Global Economy Updates",
+      description: "Latest trends in the global economy and what investors need to know.",
+      url: "https://example.com/news2"
+    },
+    {
+      title: "Top News 3: Health Breakthroughs",
+      description: "New medical research and health tips to improve your daily life.",
+      url: "https://example.com/news3"
+    }
+  ];
+
+  topNews.forEach(article => {
+    const newsItem = document.createElement("article");
+    newsItem.innerHTML = `
+      <h2>${article.title}</h2>
+      <p>${article.description}</p>
+      <a href="${article.url}" target="_blank">Read More</a>
+    `;
+    main.appendChild(newsItem);
+  });
+
+  // --- TikTok Trends ---
+  const tiktokTrends = [
+    "#DanceChallenge – 2M views",
+    "#FunnyPets – 1.5M views",
+    "#LifeHacks – 1.2M views",
+    "#CookingTips – 900K views",
+    "#TravelVlog – 800K views"
+  ];
+
   const tiktokArticle = document.createElement("article");
   tiktokArticle.innerHTML = `
     <h2>Trending TikTok Videos</h2>
-    <ul>
-      <li>#DanceChallenge – 2M views</li>
-      <li>#FunnyPets – 1.5M views</li>
-      <li>#LifeHacks – 1.2M views</li>
-      <li>#CookingTips – 900K views</li>
-      <li>#TravelVlog – 800K views</li>
-    </ul>
+    <ul>${tiktokTrends.map(item => `<li>${item}</li>`).join("")}</ul>
     <p>Note: TikTok trending data updated manually for demo.</p>
   `;
-  
   main.appendChild(tiktokArticle);
-}
 
-// ---------- Step 3: Google Trends Placeholder ----------
-function loadGoogleTrends() {
-  const main = document.querySelector("main");
-  
+  // --- Google Trends ---
+  const googleTrends = [
+    `"AI Tools 2026"`,
+    `"TikTok Viral Challenges"`,
+    `"World Cup Highlights"`,
+    `"Top Movies This Week"`,
+    `"Health Tips 2026"`
+  ];
+
   const googleArticle = document.createElement("article");
   googleArticle.innerHTML = `
     <h2>Google Search Trending Topics</h2>
-    <ul>
-      <li>"AI Tools 2026"</li>
-      <li>"TikTok Viral Challenges"</li>
-      <li>"World Cup Highlights"</li>
-      <li>"Top Movies This Week"</li>
-      <li>"Health Tips 2026"</li>
-    </ul>
+    <ul>${googleTrends.map(item => `<li>${item}</li>`).join("")}</ul>
     <p>Note: Google Trends data updated manually for demo.</p>
   `;
-  
   main.appendChild(googleArticle);
-}
 
-// ---------- Step 4: Initialize everything ----------
-window.addEventListener("DOMContentLoaded", () => {
-  fetchTopNews();       // Step 1: Top News
-  loadTikTokTrends();   // Step 2: TikTok Trends
-  loadGoogleTrends();   // Step 3: Google Trends
-
-  // Add current date in footer
+  // --- Footer Date Update ---
   const footer = document.querySelector("footer p");
   const date = new Date();
   footer.textContent += ` | Updated: ${date.toDateString()}`;
